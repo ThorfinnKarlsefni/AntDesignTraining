@@ -3,6 +3,7 @@
 
 declare namespace API {
   type CurrentUser = {
+    roles: never[];
     userName?: string;
     avatar?: string;
     id?: string;
