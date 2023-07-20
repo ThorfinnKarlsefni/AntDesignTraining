@@ -84,7 +84,7 @@ export async function removeRule(options?: { [key: string]: any }) {
 
 /** 获取全部用户 */
 export async function getAllUsers(options?: { [key: string]: any }) {
-  return request<API.CurrentUser[]>('/api/getAllUsers', {
+  return request<API.UserListResponse>('/api/getAllUsers', {
     method: 'POST',
     ...(options || {}),
   });

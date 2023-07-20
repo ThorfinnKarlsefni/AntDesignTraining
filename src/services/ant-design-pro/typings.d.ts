@@ -31,6 +31,13 @@ declare namespace API {
     currentAuthority?: string;
   };
 
+  type UserListResponse = {
+    users: CurrentUser[];
+    total: number;
+    pageSize: number;
+    currentPage: number;
+  };
+
   type PageParams = {
     current?: number;
     pageSize?: number;

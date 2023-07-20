@@ -1,7 +1,9 @@
-﻿import { getAllUsers } from '@/services/ant-design-pro/api';
+﻿import DeleteButton from '@/components/Buttons/delete';
+import { getAllUsers } from '@/services/ant-design-pro/api';
 import { ProList } from '@ant-design/pro-components';
 import { Space, Tag } from 'antd';
-import { Key, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import ResetUpdateFormComponent from './components/ResetUpdateForm';
 
 const roleColors: { [key: string]: string } = {
   Admin: 'red',
@@ -12,23 +14,50 @@ const defaultColor = 'cyan';
 
 const UserList: React.FC = () => {
   const [users, setUsers] = useState<API.CurrentUser[]>([]);
+  // paginstion
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [totalItems, setTotalItems] = useState<number>(0);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  const handlePageChange = (page: number, pageSize?: number | undefined) => {
+    setCurrentPage(page);
+    if (pageSize !== undefined) {
+      setCurrentPage(pageSize);
+    }
+    fetchUsers(page, pageSize || 3);
+  };
 
   useEffect(() => {
-    fetchUsers();
+    handlePageChange(10);
+    // fetchUsers();
   }, []);
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (page: number, pageSize: number) => {
     try {
-      const fetchedUsers = await getAllUsers({
+      const response = await getAllUsers({
         skipErrorHandler: true,
+        page,
+        pageSize,
       });
-      setUsers(fetchedUsers);
+      setUsers(response.users);
+      setTotalItems(response.total);
+      setCurrentPage(response.currentPage);
+      setPageSize(response.pageSize);
     } catch (error) {
       console.log(error);
     }
   };
 
   const getRoleColor = (role: string) => roleColors[role] || defaultColor;
+
+  function handleConfirm(): void {
+    // throw new Error('Function not implemented.');
+  }
+
+  function handleCancel(): void {
+    // throw new Error('Function not implemented.');
+  }
 
   return (
     <ProList<API.CurrentUser>
@@ -67,16 +96,25 @@ const UserList: React.FC = () => {
         },
         actions: {
           render: (text, row, index, action) => [
-            <a
-              onClick={() => {
-                action?.startEditable(row.id as Key);
-              }}
-              key="link"
-            >
-              编辑
-            </a>,
+            <ResetUpdateFormComponent
+              key={`update-${row.id}`}
+              modalVisible={modalVisible}
+              setModalVisible={setModalVisible}
+            />,
+            <DeleteButton
+              key={`delete-${row.id}`}
+              title="Are you sure delete this task?"
+              onConfirm={handleConfirm}
+              onCancel={handleCancel}
+            />,
           ],
         },
+      }}
+      pagination={{
+        pageSize,
+        current: currentPage,
+        total: totalItems,
+        onChange: (page) => setCurrentPage(page),
       }}
     />
   );
