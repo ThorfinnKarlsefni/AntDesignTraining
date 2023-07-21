@@ -5,25 +5,25 @@ const { confirm } = Modal;
 interface DeleteButtonProps {
   title: string;
   onConfirm: () => void;
-  onCancel: () => void;
+  buttonText: string;
+  content: string;
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({ title, onConfirm, onCancel }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({ title, onConfirm, buttonText, content }) => {
   const showDeleteConfirm = () => {
     confirm({
       title,
       icon: null,
-      content: '确定要删除吗?',
+      content: content,
       okText: 'Yes',
       cancelText: 'No',
       onOk: onConfirm,
-      onCancel,
     });
   };
 
   return (
     <a target="_blank" rel="noopener noreferrer" key="view" onClick={showDeleteConfirm}>
-      删除
+      {buttonText}
     </a>
   );
 };

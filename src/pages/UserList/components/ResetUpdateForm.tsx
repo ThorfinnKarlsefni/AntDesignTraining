@@ -36,7 +36,6 @@ const ResetUpdateFormComponent: React.FC<ResetUpdateFormComponentProps> = ({
       </Space>
       <ModalForm
         title="用户信息"
-        width={400}
         formRef={restFormRef}
         open={modalVisible}
         onOpenChange={setModalVisible}
@@ -64,7 +63,7 @@ const ResetUpdateFormComponent: React.FC<ResetUpdateFormComponentProps> = ({
           tooltip="最长为24位"
           placeholder="请输入名称"
         />
-        <ProFormText width="md" name="role" label="角色" placeholder="角色名称" />
+        <ProFormText name="role" label="角色" placeholder="角色名称" />
       </ModalForm>
     </>
   );

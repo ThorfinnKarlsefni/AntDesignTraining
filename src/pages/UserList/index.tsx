@@ -3,7 +3,7 @@ import { getAllUsers } from '@/services/ant-design-pro/api';
 import { ProList } from '@ant-design/pro-components';
 import { Space, Tag } from 'antd';
 import { useEffect, useState } from 'react';
-import ResetUpdateFormComponent from './components/ResetUpdateForm';
+import UserUpdateForm from './components/UserUpdateForm';
 
 const roleColors: { [key: string]: string } = {
   Admin: 'red',
@@ -18,7 +18,6 @@ const UserList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const handlePageChange = (page: number, pageSize?: number | undefined) => {
     setCurrentPage(page);
@@ -30,7 +29,6 @@ const UserList: React.FC = () => {
 
   useEffect(() => {
     handlePageChange(10);
-    // fetchUsers();
   }, []);
 
   const fetchUsers = async (page: number, pageSize: number) => {
@@ -52,10 +50,6 @@ const UserList: React.FC = () => {
   const getRoleColor = (role: string) => roleColors[role] || defaultColor;
 
   function handleConfirm(): void {
-    // throw new Error('Function not implemented.');
-  }
-
-  function handleCancel(): void {
     // throw new Error('Function not implemented.');
   }
 
@@ -96,16 +90,13 @@ const UserList: React.FC = () => {
         },
         actions: {
           render: (text, row, index, action) => [
-            <ResetUpdateFormComponent
-              key={`update-${row.id}`}
-              modalVisible={modalVisible}
-              setModalVisible={setModalVisible}
-            />,
+            <UserUpdateForm key={`update-${row.id}`} title="用户信息" user={row} />,
             <DeleteButton
               key={`delete-${row.id}`}
               title="Are you sure delete this task?"
+              buttonText="禁用"
+              content="确定要禁用当前用户吗?"
               onConfirm={handleConfirm}
-              onCancel={handleCancel}
             />,
           ],
         },
