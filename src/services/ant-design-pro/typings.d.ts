@@ -4,7 +4,7 @@
 declare namespace API {
   type CurrentUser = {
     roles: never[];
-    userName?: string;
+    username?: string;
     avatar?: string;
     id?: string;
     email?: string;
@@ -31,11 +31,16 @@ declare namespace API {
     currentAuthority?: string;
   };
 
-  type UserListResponse = {
+  type UserList = {
     users: CurrentUser[];
     total: number;
     pageSize: number;
     currentPage: number;
+  };
+
+  type Role = {
+    name: string;
+    createTime?: string;
   };
 
   type PageParams = {

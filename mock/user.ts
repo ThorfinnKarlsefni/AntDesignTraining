@@ -42,7 +42,7 @@ export default {
       return;
     }
     res.send({
-      userName: 'Serati Ma',
+      username: 'Serati Ma',
       avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
       userid: '00000001',
       email: 'antdesign@alipay.com',
@@ -178,4 +178,63 @@ export default {
   },
 
   'GET  /api/login/captcha': getFakeCaptcha,
+
+  'POST /api/userList': (req: Request, res: Response) => {
+    res.send({
+      total: 6,
+      pageSize: 3,
+      currentPage: 1,
+      users: [
+        {
+          id: 1,
+          username: 'Cheung',
+          roles: ['Admin', '大聪明'],
+          avatar:
+            'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+        },
+        {
+          id: 2,
+          username: 'Askeladd',
+          roles: ['Ant Design'],
+          avatar:
+            'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+        },
+        {
+          id: 3,
+          username: '暖暖',
+          roles: ['蚂蚁金服体验科技'],
+          avatar:
+            'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+        },
+        {
+          id: 4,
+          userName: 'YYYY',
+          roles: ['TechUI'],
+          avatar:
+            'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+        },
+        {
+          id: 5,
+          username: 'ZZZZ',
+          roles: ['Operation'],
+          avatar:
+            'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+        },
+        {
+          id: 6,
+          userName: 'AAA',
+          roles: ['Operation'],
+          avatar:
+            'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+        },
+        {
+          id: 7,
+          username: 'AAA',
+          roles: ['Operation'],
+          avatar:
+            'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+        },
+      ],
+    });
+  },
 };

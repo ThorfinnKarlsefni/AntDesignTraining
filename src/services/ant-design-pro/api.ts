@@ -4,7 +4,7 @@ import { request } from '@umijs/max';
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
-  return request<API.CurrentUser>('/api/User', {
+  return request<API.CurrentUser>('/api/user', {
     method: 'GET',
     ...(options || {}),
   });
@@ -83,8 +83,16 @@ export async function removeRule(options?: { [key: string]: any }) {
 }
 
 /** 获取全部用户 */
-export async function getAllUsers(options?: { [key: string]: any }) {
-  return request<API.UserListResponse>('/api/getAllUsers', {
+export async function getUserList(options?: { [key: string]: any }) {
+  return request<API.UserList>('/api/userList', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}
+
+// get roles
+export async function getRoleList(options?: { [key: string]: any }) {
+  return request<API.Role[]>('/api/roleList', {
     method: 'POST',
     ...(options || {}),
   });

@@ -1,6 +1,5 @@
-﻿import { Modal } from 'antd';
-
-const { confirm } = Modal;
+﻿import { App } from 'antd';
+import React from 'react';
 
 interface DeleteButtonProps {
   title: string;
@@ -10,19 +9,19 @@ interface DeleteButtonProps {
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({ title, onConfirm, buttonText, content }) => {
+  const { modal } = App.useApp();
+
   const showDeleteConfirm = () => {
-    confirm({
+    modal.confirm({
       title,
-      icon: null,
       content: content,
-      okText: 'Yes',
+      okText: 'Ok',
       cancelText: 'No',
-      onOk: onConfirm,
     });
   };
 
   return (
-    <a target="_blank" rel="noopener noreferrer" key="view" onClick={showDeleteConfirm}>
+    <a target="_blank" rel="noopener noreferrer" onClick={showDeleteConfirm}>
       {buttonText}
     </a>
   );
