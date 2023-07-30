@@ -90,10 +90,16 @@ export async function getUserList(options?: { [key: string]: any }) {
   });
 }
 
-// get roles
+// 获取用户
 export async function getRoleList(options?: { [key: string]: any }) {
   return request<API.Role[]>('/api/roleList', {
     method: 'POST',
     ...(options || {}),
   });
+}
+
+export async function getToStation() {
+  //   return request<API.ToStation>('/api/toStation', {
+  //     method: 'POST',
+  //   });
 }

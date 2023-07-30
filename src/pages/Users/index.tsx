@@ -1,8 +1,9 @@
 ﻿import DeleteButton from '@/components/Buttons/delete';
 import { getRoleList, getUserList } from '@/services/ant-design-pro/api';
 import { ProList } from '@ant-design/pro-components';
-import { App, Button, Space, Tag } from 'antd';
+import { App, Badge, Space, Tag } from 'antd';
 import { useEffect, useState } from 'react';
+import UserCreateForm from './components/UserCreateForm';
 import UserUpdateForm from './components/UserUpdateForm';
 
 const roleColors: { [key: string]: string } = {
@@ -12,7 +13,23 @@ const roleColors: { [key: string]: string } = {
 
 const defaultColor = 'cyan';
 
-const UserList: React.FC = () => {
+const renderBadge = (count: number, active = false) => {
+  return (
+    <Badge
+      count={count}
+      style={{
+        marginBlockStart: -2,
+        marginInlineStart: 4,
+        color: active ? '#1890FF' : '#999',
+        backgroundColor: active ? '#E6F7FF' : '#eee',
+      }}
+    />
+  );
+};
+
+const Users: React.FC = () => {
+  const [activeKey, setActiveKey] = useState<React.Key | undefined>('tab1');
+
   const [users, setUsers] = useState<API.CurrentUser[]>([]);
   const [roles, setRoles] = useState<API.Role[]>([]);
   // paginstion
@@ -68,16 +85,6 @@ const UserList: React.FC = () => {
   return (
     <>
       <ProList<API.CurrentUser>
-        toolBarRender={() => {
-          return [
-            <Button key="add" type="primary">
-              新建
-            </Button>,
-          ];
-        }}
-        search={{
-          filterType: 'light',
-        }}
         rowKey="id"
         headerTitle="用户列表"
         dataSource={users}
@@ -87,6 +94,31 @@ const UserList: React.FC = () => {
             console.log(key, record, originRow);
             return true;
           },
+        }}
+        toolbar={{
+          menu: {
+            activeKey,
+            items: [
+              {
+                key: 'tab1',
+                label: <span>全部用户{renderBadge(99, activeKey === 'tab1')}</span>,
+              },
+              {
+                key: 'tab2',
+                label: <span>禁用{renderBadge(32, activeKey === 'tab2')}</span>,
+              },
+            ],
+            onChange(key) {
+              setActiveKey(key);
+            },
+          },
+          search: {
+            placeholder: '请输入用户信息',
+            onSearch: (value: string) => {
+              alert(value);
+            },
+          },
+          actions: [<UserCreateForm title="创建用户" />],
         }}
         onDataSourceChange={setUsers}
         metas={{
@@ -115,7 +147,7 @@ const UserList: React.FC = () => {
             search: false,
           },
           actions: {
-            render: (text, row, index, action) => [
+            render: (text, row) => [
               <UserUpdateForm
                 key={`update-${row.id}`}
                 title="用户信息"
@@ -126,23 +158,12 @@ const UserList: React.FC = () => {
                 <DeleteButton
                   key={`delete-${row.id}`}
                   title="Are you sure delete this task?"
-                  buttonText="禁用"
+                  buttonText={activeKey == 'tab2' ? '恢复' : '禁用'}
                   content="确定要禁用当前用户吗?"
                   onConfirm={handleConfirm}
                 />
               </App>,
             ],
-          },
-          status: {
-            // 自己扩展的字段，主要用于筛选，不在列表中显示
-            title: '状态',
-            valueType: 'select',
-            valueEnum: {
-              disable: {
-                text: '已禁用',
-                status: 'Error',
-              },
-            },
           },
         }}
         pagination={{
@@ -156,4 +177,4 @@ const UserList: React.FC = () => {
   );
 };
 
-export default UserList;
+export default Users;

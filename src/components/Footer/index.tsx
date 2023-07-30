@@ -2,7 +2,7 @@ import { DefaultFooter } from '@ant-design/pro-components';
 import '@umijs/max';
 import React from 'react';
 const Footer: React.FC = () => {
-  const defaultMessage = "Life's little bit messy,e all make mistakes ";
+  const defaultMessage = "Life's little bit messy,we all make mistakes ";
   const currentYear = new Date().getFullYear();
   return (
     <DefaultFooter
