@@ -36,32 +36,22 @@ export default [
         icon: 'user',
         path: '/admin/list',
       },
-      //   {
-      //     name: '角色',
-      //     icon: 'user',
-      //     path: '/admin/list',
-      //   },
-      //   {
-      //     name: '权限',
-      //     icon: 'user',
-      //     path: '/admin/list',
-      //   },
     ],
   },
   {
-    path: 'transportation',
+    path: 'transport',
     name: '运输管理',
     icon: 'car',
     routes: [
       {
-        path: '/transportation/',
-        redirect: '/transportation/invoices',
+        path: '/transport/',
+        redirect: '/transport/invoices',
       },
       {
         name: '收货开票',
         icon: 'file',
-        path: '/transportation/invoices',
-        component: './Transportation/Invoices',
+        path: '/transport/invoices',
+        component: './Transport/Invoices',
       },
     ],
   },

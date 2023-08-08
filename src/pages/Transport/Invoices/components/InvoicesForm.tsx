@@ -19,6 +19,7 @@ import {
 } from '@ant-design/pro-components';
 import { InputNumber, message, Space } from 'antd';
 import { useEffect } from 'react';
+import { submitInvoice } from '../service';
 
 interface InvoicesProps {
   onOpenChange: (open: boolean) => void;
@@ -26,14 +27,6 @@ interface InvoicesProps {
 }
 
 const InvoicesForm: React.FC<InvoicesProps> = (props) => {
-  const handelToStation = async () => {
-    try {
-      //   const response = await toStation{};
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {}, []);
 
   return (
@@ -43,9 +36,15 @@ const InvoicesForm: React.FC<InvoicesProps> = (props) => {
         width={850}
         onOpenChange={props.onOpenChange}
         open={props.open}
-        onFinish={async () => {
-          message.success('提交成功');
-          return true;
+        onFinish={async (values) => {
+          try {
+            await submitInvoice(values);
+            message.success('开票成功');
+            return true;
+          } catch (error) {
+            message.error('开票失败!请联系管理员');
+            return false;
+          }
         }}
       >
         <ProForm.Group>
@@ -214,41 +213,35 @@ const InvoicesForm: React.FC<InvoicesProps> = (props) => {
         </ProForm.Group>
 
         <ProForm.Group>
+          <ProFormRadio.Group
+            name="payMethod"
+            label="付款方式"
+            fieldProps={{ defaultValue: '现付' }}
+            options={['现付', '到付', '回付']}
+          />
+        </ProForm.Group>
+
+        <ProForm.Group>
           <ProFormSelect addonBefore={<BankOutlined />} name="bankName" label="银行名称" />
           <ProFormText name="bankCard" label="银行卡" />
         </ProForm.Group>
 
         <ProForm.Group>
-          <ProFormSelect
-            addonBefore={<UsergroupAddOutlined />}
-            name="salespersonName"
-            label="业务员"
-          />
-          <ProFormSelect name="salesperson" label="划价员" />
+          <ProFormSelect addonBefore={<BankOutlined />} name="bankName" label="银行名称" />
+          <ProFormText name="bankCard" label="银行卡" />
+        </ProForm.Group>
+
+        <ProForm.Group>
+          <ProFormSelect addonBefore={<UsergroupAddOutlined />} name="salesperson" label="业务员" />
+          <ProFormSelect name="bargainer" label="划价员" />
           <ProFormSelect name="receiptType" label="回单类型" />
         </ProForm.Group>
 
         <ProFormRadio.Group
           name="deliveryMethod"
           label="交货方式"
-          options={[
-            {
-              label: '送货',
-              value: 'a',
-            },
-            {
-              label: '等通知放货',
-              value: 'b',
-            },
-            {
-              label: '大车直送',
-              value: 'c',
-            },
-            {
-              label: '另算',
-              value: 'd',
-            },
-          ]}
+          fieldProps={{ defaultValue: '送货' }}
+          options={['送货', '等通知放货', '大车直送', '另算']}
         />
 
         <ProFormText tooltip="写点什么吧" width="lg" name="remark" label="备注" />

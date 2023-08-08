@@ -90,15 +90,13 @@ const Login: React.FC = () => {
         ...values,
         type,
       });
-      //   if (msg.status === '200') {
       const defaultLoginSuccessMessage = '登录成功！';
       message.success(defaultLoginSuccessMessage);
-      sessionStorage.setItem('token', token);
+      localStorage.setItem('token', token);
       await fetchUserInfo();
       const urlParams = new URL(window.location.href).searchParams;
       history.push(urlParams.get('redirect') || '/');
       return;
-      //   }
       // 如果失败去设置用户错误信息
       //   setUserLoginState(msg);
     } catch (error) {

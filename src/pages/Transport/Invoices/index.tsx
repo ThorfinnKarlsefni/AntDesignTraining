@@ -3,29 +3,6 @@ import { Badge, Button } from 'antd';
 import { useState } from 'react';
 import InvoicesForm from './components/InvoicesForm';
 
-interface TableListItem {
-  //   id: number;
-  waybillId: string;
-  toStation: string;
-  transitStation: string;
-  cargoName: string;
-  cargoId: string;
-  quantity: number;
-  dimension: string;
-  //   cash on delivery collection
-  codcFee: number;
-  freightFee: number;
-  backFreightFee: number;
-  deliveryFee: number;
-  refundFee: number;
-  infoFee: number;
-  shipperName: string;
-  shipperPhone: string;
-  deliveryName: string;
-  deliverPhone: string;
-  remark: string;
-}
-
 const columns: ProColumns<TableListItem>[] = [
   {
     title: '运单号',
@@ -64,7 +41,7 @@ const columns: ProColumns<TableListItem>[] = [
     dataIndex: 'deliveryPhone',
   },
   {
-    title: '件数',
+    title: '数量',
     dataIndex: 'quantity',
   },
   {

@@ -135,7 +135,7 @@ export const request = {
   ...errorConfig,
   requestInterceptors: [
     (url: any, options: any) => {
-      const token = sessionStorage.getItem('token');
+      const token = localStorage.getItem('token');
       if (token) {
         const authHeader = { Authorization: `Bearer ${token}` };
         const modifiedOptions = { ...options, headers: authHeader };
@@ -145,4 +145,3 @@ export const request = {
     },
   ],
 };
- 
