@@ -2,6 +2,7 @@
 import { Badge, Button } from 'antd';
 import { useState } from 'react';
 import InvoicesForm from './components/InvoicesForm';
+import { TableListItem } from './data';
 
 const columns: ProColumns<TableListItem>[] = [
   {

@@ -1,87 +1,84 @@
 ﻿import {
   BankOutlined,
   DollarOutlined,
+  InsuranceOutlined,
   NodeIndexOutlined,
   ShoppingOutlined,
   UsergroupAddOutlined,
-  UserOutlined,
-  UserSwitchOutlined,
 } from '@ant-design/icons';
 import {
   DrawerForm,
   ProForm,
   ProFormDigit,
   ProFormFieldSet,
-  ProFormMoney,
+  ProFormItem,
   ProFormRadio,
   ProFormSelect,
   ProFormText,
 } from '@ant-design/pro-components';
-import { App, InputNumber, message, Space } from 'antd';
-import { InvoiceItem } from '../data';
-import { submitInvoice } from '../service';
+import { App, InputNumber, message, Select, Space } from 'antd';
+import { invoicesFeeParams, InvoicesProps, TableListItem } from '../data';
 
-interface InvoicesProps {
-  onOpenChange: (open: boolean) => void;
-  open: boolean;
-}
+import { submitInvoice } from '../service';
+import UserInfoForm from './UserInfoForm';
+
+const paymentMethods = [
+  { value: 1, label: '现付' },
+  { value: 2, label: '代付' },
+  { value: 3, label: '回付' },
+  { value: 4, label: '扣付', disabled: true },
+];
+
+const paidMethods = [
+  { value: 1, label: '已支' },
+  { value: 2, label: '未支' },
+];
+const paymentSelect = (
+  <Select style={{ width: 80 }} defaultValue={'现付'} options={paymentMethods} />
+);
+
+const paidSelect = <Select style={{ width: 80 }} defaultValue={'未支'} options={paidMethods} />;
+
+const FeeForm = (data: invoicesFeeParams) => (
+  <>
+    <ProFormItem
+      name={data.name}
+      label={data.label}
+      rules={data.rules}
+      addonBefore={data.addonBefore}
+    >
+      <InputNumber
+        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+        parser={(value) => {
+          const parsedValue = value!.replace(/,/g, '');
+          const floatValue = parseFloat(parsedValue);
+          return isNaN(floatValue) ? '' : Math.max(floatValue, 1);
+        }}
+        style={data.style}
+        controls={false}
+        addonBefore={false}
+        addonAfter={data.addonAfter}
+      />
+    </ProFormItem>
+  </>
+);
 
 const InvoicesForm: React.FC<InvoicesProps> = (props) => {
+  const handelSubmit = async (values: TableListItem) => {
+    try {
+      await submitInvoice(values);
+      message.success('开票成功!');
+      return true;
+    } catch (error: any) {
+      message.error(error.response.data);
+      return false;
+    }
+  };
+
   const renderContent = () => {
     return (
       <>
-        <ProForm.Group>
-          <ProFormText
-            name="shipperName"
-            width="xs"
-            label="发货人"
-            addonBefore={<UserOutlined />}
-            rules={[{ required: true, message: '请填写发货人' }]}
-          />
-          <ProFormDigit
-            name="shipperPhone"
-            label="发货电话"
-            fieldProps={{ type: 'number', controls: false }}
-            transform={(value) => {
-              return {
-                shipperPhone: String(value),
-              };
-            }}
-            rules={[
-              { required: true, message: '请填写发货人电话' },
-              {
-                pattern: /^1\d{10}$/,
-                message: '手机号格式错误',
-              },
-            ]}
-          />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormText
-            name="consigneeName"
-            width="xs"
-            label="收货人"
-            addonBefore={<UserSwitchOutlined />}
-            rules={[{ required: true, message: '请填写收货人' }]}
-          />
-          <ProFormDigit
-            name="consigneePhone"
-            label="收货电话"
-            transform={(value) => {
-              return {
-                consigneePhone: String(value),
-              };
-            }}
-            fieldProps={{ type: 'number', controls: false }}
-            rules={[
-              { required: true, message: '请填写发货人电话' },
-              {
-                pattern: /^1\d{10}$/,
-                message: '手机号格式错误',
-              },
-            ]}
-          />
-        </ProForm.Group>
+        <UserInfoForm />
         <ProForm.Group>
           <ProFormSelect
             name="toStataion"
@@ -142,13 +139,13 @@ const InvoicesForm: React.FC<InvoicesProps> = (props) => {
             <Space.Compact>
               <InputNumber
                 type="number"
-                style={{ width: 70 }}
+                style={{ width: 75 }}
                 min={1}
                 name="volume"
                 placeholder="方"
               />
               <InputNumber
-                style={{ width: 70 }}
+                style={{ width: 75 }}
                 type="number"
                 min={1}
                 name="Weight"
@@ -160,42 +157,47 @@ const InvoicesForm: React.FC<InvoicesProps> = (props) => {
         </ProForm.Group>
 
         <ProForm.Group>
-          <ProFormMoney
-            width="xs"
-            addonBefore={<DollarOutlined />}
-            min={1}
+          <FeeForm
             name="insuranceFee"
             label="保费"
+            style={{ width: 105 }}
+            addonBefore={<InsuranceOutlined />}
           />
-          <ProFormMoney width="xs" label="货物价值" name="cargoValue" min={1} tooltip="test" />
+
+          <FeeForm name="cargoValue" style={{ width: 105 }} label="货物价值" />
         </ProForm.Group>
         <ProForm.Group>
-          {/* cash on delivery collection */}
-          <ProFormMoney
-            width="xs"
+          <FeeForm
             name="FreightFee"
             label="运费"
             rules={[{ required: true, message: '请输入运费' }]}
+            style={{ width: 150 }}
             addonBefore={<DollarOutlined />}
-            min={1}
+            addonAfter={paymentSelect}
           />
-          <ProFormMoney
-            width="xs"
+          <FeeForm
             name="codcFee"
             label="代收款"
-            rules={[{ required: true, message: '请输入代收款' }]}
-            min={1}
+            style={{ width: 150 }}
+            addonAfter={paymentSelect}
           />
-          <ProFormMoney width="xs" name="backFreightFee" label="后程运费" min={1} />
-          <ProFormMoney width="xs" name="deliveryFee" label="送货费" min={1} />
-          <ProFormMoney width="xs" name="notificationFee" label="通知费" min={1} />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormRadio.Group
-            name="PayMethod"
-            label="付款方式"
-            fieldProps={{ defaultValue: '现付' }}
-            options={['现付', '到付', '回付']}
+          <FeeForm
+            name="backFreightFee"
+            label="后程运费"
+            style={{ width: 150 }}
+            addonAfter={paymentSelect}
+          />
+          <FeeForm
+            name="deliveryFee"
+            label="送货费"
+            style={{ width: 150 }}
+            addonAfter={paidSelect}
+          />
+          <FeeForm
+            name="notificationFee"
+            label="通知费"
+            style={{ width: 150 }}
+            addonAfter={paidSelect}
           />
         </ProForm.Group>
         <ProForm.Group>
@@ -203,8 +205,7 @@ const InvoicesForm: React.FC<InvoicesProps> = (props) => {
           <ProFormText name="bankCard" label="银行卡" />
         </ProForm.Group>
         <ProForm.Group>
-          <ProFormSelect addonBefore={<UsergroupAddOutlined />} name="Creator" label="业务员" />
-          <ProFormSelect name="bargainer" label="划价员" />
+          <ProFormSelect addonBefore={<UsergroupAddOutlined />} name="bargainer" label="划价员" />
           <ProFormSelect name="receiptType" label="回单类型" />
         </ProForm.Group>
         <ProFormRadio.Group
@@ -218,23 +219,12 @@ const InvoicesForm: React.FC<InvoicesProps> = (props) => {
     );
   };
 
-  const handelSubmit = async (values: InvoiceItem) => {
-    try {
-      await submitInvoice(values);
-      message.success('开票成功!');
-      return true;
-    } catch (error: any) {
-      message.error(error.response.data);
-      return false;
-    }
-  };
-
   return (
     <>
       <App>
         <DrawerForm
           title="收货开票"
-          width={850}
+          width={1000}
           onOpenChange={props.onOpenChange}
           open={props.open}
           onFinish={handelSubmit}
