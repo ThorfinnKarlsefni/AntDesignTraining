@@ -4,27 +4,28 @@ import { AutoComplete } from 'antd';
 import { useState } from 'react';
 import { getShipperInfo } from '../service';
 
-const renderItem = (title: string, count: string) => ({
-  value: title,
-  label: (
+const renderItem = (phone: string, user: string) => ({
+  value: phone,
+  user: user,
+  element: (
     <div
       style={{
         display: 'flex',
         justifyContent: 'space-between',
       }}
     >
-      {title}
+      {phone}
       <span>
-        <UserOutlined /> {count}
+        <UserOutlined /> {user}
       </span>
     </div>
   ),
 });
 
 const UserInfoForm: React.FC = () => {
-  const [shipper, setShipper] = useState<{ value: string; label: React.JSX.Element }[]>([
-    renderItem('暂无数据', 'NULL'),
-  ]);
+  const [shipper, setShipper] = useState<{ value: string; label: React.JSX.Element }[]>([]);
+  const [shipperUserName, setShipperUserName] = useState('');
+  const [form] = ProForm.useForm();
 
   const options = [
     {
@@ -34,12 +35,15 @@ const UserInfoForm: React.FC = () => {
   ];
 
   const handelShipperPhone = async (phone: string) => {
-    if (phone.length > 4) {
+    if (phone.length > 2) {
       const res = await getShipperInfo(phone);
-      console.log(res);
-      const newShipeer = res.map((item: any) => renderItem(item.shipperName, item.shipperPhone));
+      const newShipeer = res.map((item: any) => renderItem(item.shipperPhone, item.shipperName));
       setShipper(newShipeer);
     }
+  };
+
+  const handelShipperName = async (user: string, option: any) => {
+    setShipperUserName(option.user);
   };
 
   return (
@@ -50,13 +54,18 @@ const UserInfoForm: React.FC = () => {
           width="xs"
           label="发货人"
           addonBefore={<UserOutlined />}
+          fieldProps={{
+            value: shipperUserName,
+            onChange: (e) => setShipperUserName(e.target.value),
+          }}
           rules={[{ required: true, message: '请填写发货人' }]}
-        ></ProFormText>
-        <ProFormFieldSet label="发货电话">
+        />
+        <ProFormFieldSet name="shipperPhone" label="发货电话">
           <AutoComplete
             style={{ width: 230 }}
             placeholder={'请输入手机号'}
             onSearch={handelShipperPhone}
+            onSelect={handelShipperName}
             options={options}
           />
         </ProFormFieldSet>
