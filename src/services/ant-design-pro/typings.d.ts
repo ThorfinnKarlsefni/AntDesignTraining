@@ -26,21 +26,10 @@ declare namespace API {
   };
 
   type LoginResult = {
-    status?: string;
-    type?: string;
-    currentAuthority?: string;
-  };
-
-  type UserList = {
-    users: CurrentUser[];
-    total: number;
-    pageSize: number;
-    currentPage: number;
-  };
-
-  type Role = {
-    name: string;
-    createTime?: string;
+    data: string;
+    // status?: string;
+    // type?: string;
+    // currentAuthority?: string;
   };
 
   type PageParams = {

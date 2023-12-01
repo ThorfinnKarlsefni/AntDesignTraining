@@ -72,7 +72,13 @@ export const errorConfig: RequestConfig = {
       } else if (error.response) {
         // Axios 的错误
         // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-        message.error(`Response status:${error.response.status}`);
+        if (error.response.status === 400) {
+          message.error(error.response.data);
+        } else if (error.response.status === 415) {
+          message.error('非法请求');
+        } else {
+          message.error('服务器内部错误');
+        }
       } else if (error.request) {
         // 请求已经成功发起，但没有收到响应
         // \`error.request\` 在浏览器中是 XMLHttpRequest 的实例，
@@ -89,7 +95,6 @@ export const errorConfig: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       // 拦截请求配置，进行个性化处理。
-      //   const url = config?.url?.concat('?token = 123');
       const url = config?.url;
       return { ...config, url };
     },
@@ -97,14 +102,14 @@ export const errorConfig: RequestConfig = {
 
   // 响应拦截器
   responseInterceptors: [
-    (response) => {
-      // 拦截响应数据，进行个性化处理
-      const { data } = response as unknown as ResponseStructure;
-
-      if (data?.success === false) {
-        message.error('请求失败！');
-      }
-      return response;
-    },
+    // (response) => {
+    // 拦截响应数据，进行个性化处理
+    //   const { data } = response;
+    //   console.log(data);
+    //   if (!data.success) {
+    //     message.error('请求失败！');
+    //   }
+    //   return response;
+    // },
   ],
 };

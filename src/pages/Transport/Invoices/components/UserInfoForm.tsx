@@ -1,13 +1,14 @@
 ﻿import { UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
-import { ProForm, ProFormDigit, ProFormFieldSet, ProFormText } from '@ant-design/pro-components';
+import { ProForm, ProFormFieldSet, ProFormText } from '@ant-design/pro-components';
 import { AutoComplete } from 'antd';
-import { useState } from 'react';
-import { getShipperInfo } from '../service';
+import React, { useState } from 'react';
+import { UserInfoFormProps } from '../data';
+import { getConsigneeList, getShipperList } from '../service';
 
 const renderItem = (phone: string, user: string) => ({
   value: phone,
   user: user,
-  element: (
+  label: (
     <div
       style={{
         display: 'flex',
@@ -21,29 +22,63 @@ const renderItem = (phone: string, user: string) => ({
     </div>
   ),
 });
+const UserInfoForm: React.FC<UserInfoFormProps> = ({ form }) => {
+  //shipper
+  const [shipper, setShipper] = useState<
+    { phone: string; user: string; label: React.JSX.Element }[]
+  >([]);
 
-const UserInfoForm: React.FC = () => {
-  const [shipper, setShipper] = useState<{ value: string; label: React.JSX.Element }[]>([]);
-  const [shipperUserName, setShipperUserName] = useState('');
-  const [form] = ProForm.useForm();
+  //consignee
+  const [consignee, setConsignee] = useState<
+    { phone: string; user: string; label: React.JSX.Element }[]
+  >([]);
 
-  const options = [
+  const shipperOptions = [
     {
-      label: 'Shipper',
+      label: '发货人',
       options: shipper,
     },
   ];
 
-  const handelShipperPhone = async (phone: string) => {
-    if (phone.length > 2) {
-      const res = await getShipperInfo(phone);
-      const newShipeer = res.map((item: any) => renderItem(item.shipperPhone, item.shipperName));
-      setShipper(newShipeer);
-    }
+  const consigneeOptions = [
+    {
+      label: '收货人',
+      options: consignee,
+    },
+  ];
+
+  const handleShipperPhone = async (phone: string) => {
+    let searchTimer;
+    clearTimeout(searchTimer);
+
+    searchTimer = setTimeout(async () => {
+      if (phone.length > 2 && /^\d+$/.test(phone)) {
+        const res = await getShipperList(phone);
+        const newShipper = res.map((item: any) => renderItem(item.shipperPhone, item.shipperName));
+        setShipper(newShipper);
+      }
+    }, 500);
   };
 
-  const handelShipperName = async (user: string, option: any) => {
-    setShipperUserName(option.user);
+  const handleShipperName = async (phone: string, option: any) => {
+    form.setFieldsValue({ shipperName: option.user });
+  };
+
+  const handleConsigneePhone = async (phone: string) => {
+    let searchTimer;
+    clearTimeout(searchTimer);
+
+    searchTimer = setTimeout(async () => {
+      if (phone.length > 2 && /^\d+$/.test(phone)) {
+        const res = await getConsigneeList(phone);
+        const Consignees = res.map((item: any) => renderItem(item.phone, item.name));
+        setConsignee(Consignees);
+      }
+    }, 500);
+  };
+
+  const handleConsigneeName = async (phone: string, option: any) => {
+    form.setFieldsValue({ consigneeName: option.user });
   };
 
   return (
@@ -54,19 +89,25 @@ const UserInfoForm: React.FC = () => {
           width="xs"
           label="发货人"
           addonBefore={<UserOutlined />}
-          fieldProps={{
-            value: shipperUserName,
-            onChange: (e) => setShipperUserName(e.target.value),
-          }}
           rules={[{ required: true, message: '请填写发货人' }]}
         />
-        <ProFormFieldSet name="shipperPhone" label="发货电话">
+        <ProFormFieldSet
+          name="shipperPhone"
+          label="发货电话"
+          rules={[
+            { required: true, message: '请填写发货电话' },
+            {
+              pattern: /^1\d{10}$/,
+              message: '手机号格式错误',
+            },
+          ]}
+        >
           <AutoComplete
             style={{ width: 230 }}
             placeholder={'请输入手机号'}
-            onSearch={handelShipperPhone}
-            onSelect={handelShipperName}
-            options={options}
+            onSearch={handleShipperPhone}
+            onSelect={handleShipperName}
+            options={shipperOptions}
           />
         </ProFormFieldSet>
       </ProForm.Group>
@@ -77,23 +118,25 @@ const UserInfoForm: React.FC = () => {
           addonBefore={<UserSwitchOutlined />}
           rules={[{ required: true, message: '请填写收货人' }]}
         />
-        <ProFormDigit
+        <ProFormFieldSet
           name="consigneePhone"
-          label="收货电话"
-          transform={(value) => {
-            return {
-              consigneePhone: String(value),
-            };
-          }}
-          fieldProps={{ type: 'number', controls: false }}
+          label="送货电话"
           rules={[
-            { required: true, message: '请填写发货人电话' },
+            { required: true, message: '请填写送货电话' },
             {
               pattern: /^1\d{10}$/,
               message: '手机号格式错误',
             },
           ]}
-        />
+        >
+          <AutoComplete
+            style={{ width: 230 }}
+            placeholder={'请输入手机号'}
+            onSearch={handleConsigneePhone}
+            onSelect={handleConsigneeName}
+            options={consigneeOptions}
+          />
+        </ProFormFieldSet>
       </ProForm.Group>
     </>
   );

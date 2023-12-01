@@ -28,6 +28,6 @@ const { Search } = Input;
 // };
 const onSearch = (value: string) => console.log(value);
 
-export const HeaderSeaerch = () => {
+export const HeaderSearch = () => {
   return <Search placeholder="请输入运单号" onSearch={onSearch} enterButton />;
 };

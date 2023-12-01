@@ -20,7 +20,7 @@ export default [
     path: '/admin',
     name: '系统',
     icon: 'crown',
-    access: 'canAdmin',
+    // access: 'canAdmin',
     routes: [
       {
         path: '/admin',
@@ -32,9 +32,29 @@ export default [
         component: './Admin',
       },
       {
-        name: '管理员',
-        icon: 'user',
-        path: '/admin/list',
+        name: '员工列表',
+        path: '/admin/users',
+        component: './Admin/Users',
+      },
+      {
+        name: '菜单管理',
+        path: '/admin/Menu',
+        component: './Admin/Menu',
+      },
+      {
+        name: '权限管理',
+        path: '/admin/Permission',
+        component: './Admin/Permission',
+      },
+      {
+        name: '角色管理',
+        path: '/admin/Role',
+        component: './Admin/Role',
+      },
+      {
+        name: '站点管理',
+        path: '/admin/Station',
+        component: './Admin/Station',
       },
     ],
   },
@@ -49,17 +69,11 @@ export default [
       },
       {
         name: '收货开票',
-        icon: 'file',
+        icon: 'invoice',
         path: '/transport/invoices',
         component: './Transport/Invoices',
       },
     ],
-  },
-  {
-    name: '员工列表',
-    icon: 'user',
-    path: '/users',
-    component: './Users',
   },
   {
     path: '/',

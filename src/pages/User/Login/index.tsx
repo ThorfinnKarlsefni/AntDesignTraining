@@ -17,7 +17,7 @@ import {
 } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Helmet, history, useModel } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
+import { message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
@@ -43,22 +43,22 @@ const ActionIcons = () => {
     </>
   );
 };
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => {
-  return (
-    <Alert
-      style={{
-        marginBottom: 24,
-      }}
-      message={content}
-      type="error"
-      showIcon
-    />
-  );
-};
+// const LoginMessage: React.FC<{
+//   content: string;
+// }> = ({ content }) => {
+//   return (
+//     <Alert
+//       style={{
+//         marginBottom: 24,
+//       }}
+//       message={content}
+//       type="error"
+//       showIcon
+//     />
+//   );
+// };
 const Login: React.FC = () => {
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
+  //   const [userLoginState, setUserLoginState] = useState<API.LoginResult>();
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
   const containerClassName = useEmotionCss(() => {
@@ -84,28 +84,22 @@ const Login: React.FC = () => {
     }
   };
   const handleSubmit = async (values: API.LoginParams) => {
-    try {
-      // 登录
-      const token = await login({
-        ...values,
-        type,
-      });
-      const defaultLoginSuccessMessage = '登录成功！';
-      message.success(defaultLoginSuccessMessage);
-      localStorage.setItem('token', token);
-      await fetchUserInfo();
-      const urlParams = new URL(window.location.href).searchParams;
-      history.push(urlParams.get('redirect') || '/');
-      return;
-      // 如果失败去设置用户错误信息
-      //   setUserLoginState(msg);
-    } catch (error) {
-      const defaultLoginFailureMessage = '登录失败，请重试！';
-      console.log(error);
-      message.error(defaultLoginFailureMessage);
-    }
+    // 登录
+    const token = await login({
+      ...values,
+      type,
+    });
+    const defaultLoginSuccessMessage = '登录成功！';
+    message.success(defaultLoginSuccessMessage);
+    localStorage.setItem('token', token);
+    await fetchUserInfo();
+    const urlParams = new URL(window.location.href).searchParams;
+    history.push(urlParams.get('redirect') || '/');
+    return;
+    // 如果失败去设置用户错误信息;
+    // setUserLoginState(msg);
   };
-  const { status, type: loginType } = userLoginState;
+  //   const { status, type: loginType } = userLoginState;
   return (
     <div className={containerClassName}>
       <Helmet>
@@ -151,9 +145,9 @@ const Login: React.FC = () => {
             ]}
           />
 
-          {status === 'error' && loginType === 'account' && (
+          {/* {status === 'error' && loginType === 'account' && (
             <LoginMessage content={'错误的用户名和密码(admin/ant.design)'} />
-          )}
+          )} */}
           {type === 'account' && (
             <>
               <ProFormText
@@ -187,7 +181,8 @@ const Login: React.FC = () => {
             </>
           )}
 
-          {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
+          {/* {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />} */}
+
           {type === 'mobile' && (
             <>
               <ProFormText

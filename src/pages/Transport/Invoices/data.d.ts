@@ -1,8 +1,8 @@
-﻿export interface TableListItem {
+﻿interface InvoicesItem {
   shipperName: string;
   shipperPhone: string;
-  consingeeName: string;
-  consingeePhone: string;
+  consigneeName: string;
+  consigneePhone: string;
   toStation: number;
   transitStation?: number;
   address: string;
@@ -17,7 +17,7 @@
   insuranceFee?: number;
   //fee
   freightFee: number;
-  codcFee?: number;
+  agencyFee?: number;
   backFreightFee?: number;
   deliveryFee?: number;
   notificationFee: number;
@@ -46,4 +46,8 @@ export interface invoicesFeeParams {
   style?: ReactNode;
   addonBefore?: ReactNode;
   addonAfter?: ReactNode;
+}
+
+export interface UserInfoFormProps {
+  form: FormInstance;
 }

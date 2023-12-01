@@ -1,5 +1,6 @@
 // @ts-ignore
 /* eslint-disable */
+import { MenuDataItem } from '@ant-design/pro-components';
 import { request } from '@umijs/max';
 
 /** 获取当前的用户 GET /api/currentUser */
@@ -7,6 +8,12 @@ export async function currentUser(options?: { [key: string]: any }) {
   return request<API.CurrentUser>('/api/user', {
     method: 'POST',
     ...(options || {}),
+  });
+}
+
+export async function fetchMenuList(userId?: string) {
+  return request<MenuDataItem[]>('/api/menu', {
+    method: 'GET',
   });
 }
 
@@ -77,26 +84,4 @@ export async function removeRule(options?: { [key: string]: any }) {
     method: 'DELETE',
     ...(options || {}),
   });
-}
-
-/** 获取全部用户 */
-export async function getUserList(options?: { [key: string]: any }) {
-  return request<API.UserList>('/api/userList', {
-    method: 'POST',
-    ...(options || {}),
-  });
-}
-
-// 获取用户
-export async function getRoleList(options?: { [key: string]: any }) {
-  return request<API.Role[]>('/api/roleList', {
-    method: 'POST',
-    ...(options || {}),
-  });
-}
-
-export async function getToStation() {
-  //   return request<API.ToStation>('/api/toStation', {
-  //     method: 'POST',
-  //   });
 }

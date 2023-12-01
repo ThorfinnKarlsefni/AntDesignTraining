@@ -3,20 +3,22 @@ import React from 'react';
 
 interface DeleteButtonProps {
   title: string;
-  onConfirm: () => void;
+  onOk: () => void;
   buttonText: string;
   content: string;
+  color?: string;
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({ title, onConfirm, buttonText, content }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({ title, buttonText, content, onOk }) => {
   const { modal } = App.useApp();
 
-  const showDeleteConfirm = () => {
+  const showDeleteConfirm = async () => {
     modal.confirm({
       title,
       content: content,
       okText: 'Ok',
       cancelText: 'No',
+      onOk: onOk,
     });
   };
 

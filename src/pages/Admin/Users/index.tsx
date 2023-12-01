@@ -1,8 +1,8 @@
 ﻿import DeleteButton from '@/components/Buttons/delete';
-import { getRoleList, getUserList } from '@/services/ant-design-pro/api';
 import { ProList } from '@ant-design/pro-components';
 import { App, Badge, Space, Tag } from 'antd';
 import { useEffect, useState } from 'react';
+import { getRoleList, getUserList } from '../services';
 import UserCreateForm from './components/UserCreateForm';
 import UserUpdateForm from './components/UserUpdateForm';
 
@@ -30,12 +30,29 @@ const renderBadge = (count: number, active = false) => {
 const Users: React.FC = () => {
   const [activeKey, setActiveKey] = useState<React.Key | undefined>('tab1');
 
-  const [users, setUsers] = useState<API.CurrentUser[]>([]);
-  const [roles, setRoles] = useState<API.Role[]>([]);
-  // paginstion
+  const [users, setUsers] = useState<User[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
+  // pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
+
+  const fetchUsers = async (page: number, pageSize: number) => {
+    const response = await getUserList({
+      skipErrorHandler: true,
+      page,
+      pageSize,
+    });
+    setUsers(response.users);
+    setTotalItems(response.total);
+    setCurrentPage(response.currentPage);
+    setPageSize(response.pageSize);
+  };
+
+  const fetchRoleList = async () => {
+    const roles = await getRoleList();
+    setRoles(roles);
+  };
 
   const handlePageChange = (page: number, pageSize?: number | undefined) => {
     setCurrentPage(page);
@@ -49,44 +66,17 @@ const Users: React.FC = () => {
     handlePageChange(10);
   }, []);
 
-  const fetchUsers = async (page: number, pageSize: number) => {
-    try {
-      const response = await getUserList({
-        skipErrorHandler: true,
-        page,
-        pageSize,
-      });
-      setUsers(response.users);
-      setTotalItems(response.total);
-      setCurrentPage(response.currentPage);
-      setPageSize(response.pageSize);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const fetchRoleList = async () => {
-    try {
-      const roles = await getRoleList({
-        skipErrorHandler: true,
-      });
-      setRoles(roles);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const getRoleColor = (role: string) => roleColors[role] || defaultColor;
 
-  function handleConfirm(): void {
-    // throw new Error('Function not implemented.');
-  }
+  const handleConfirm = async () => {
+    return '1231';
+  };
 
   return (
     <>
-      <ProList<API.CurrentUser>
+      <ProList<User>
         rowKey="id"
-        headerTitle="用户列表"
+        headerTitle="员工列表"
         dataSource={users}
         showActions="hover"
         editable={{
@@ -118,7 +108,7 @@ const Users: React.FC = () => {
               alert(value);
             },
           },
-          actions: [<UserCreateForm title="创建用户" />],
+          actions: [<UserCreateForm key="userCreateForm" />],
         }}
         onDataSourceChange={setUsers}
         metas={{
@@ -132,13 +122,13 @@ const Users: React.FC = () => {
             search: false,
           },
           subTitle: {
-            render: (text, row, index, action) => {
+            render: (text, row) => {
               const roles = row.roles || []; // 根据实际情况访问 role 属性
               return (
                 <Space size={0}>
                   {roles.map((role) => (
-                    <Tag key={role} color={getRoleColor(role)}>
-                      {role}
+                    <Tag key={role.id} color={getRoleColor(role.name)}>
+                      {role.name}
                     </Tag>
                   ))}
                 </Space>
@@ -158,9 +148,9 @@ const Users: React.FC = () => {
                 <DeleteButton
                   key={`delete-${row.id}`}
                   title="Are you sure delete this task?"
-                  buttonText={activeKey == 'tab2' ? '恢复' : '禁用'}
+                  buttonText={activeKey === 'tab2' ? '恢复' : '禁用'}
                   content="确定要禁用当前用户吗?"
-                  onConfirm={handleConfirm}
+                  onOk={() => handleConfirm}
                 />
               </App>,
             ],

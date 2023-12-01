@@ -1,14 +1,8 @@
 ﻿import { Form, Input, Modal, Select } from 'antd';
 import { useState } from 'react';
 
-interface UpdateFormComponentProps {
-  title: string;
-  user: API.CurrentUser;
-  roleList: API.Role[];
-}
-
 const UserUpdateForm: React.FC<UpdateFormComponentProps> = (props) => {
-  const [modalVisbile, setModalVisible] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const handleModalOpen = () => {
     setModalVisible(true);
@@ -28,22 +22,9 @@ const UserUpdateForm: React.FC<UpdateFormComponentProps> = (props) => {
     },
   };
 
-  const tailFormItemLayout = {
-    wrapperCol: {
-      xs: {
-        span: 24,
-        offset: 0,
-      },
-      sm: {
-        span: 16,
-        offset: 8,
-      },
-    },
-  };
-
   const { Option } = Select;
   const [form] = Form.useForm();
-  const onOk = (values: any) => {};
+  const onOk = () => {};
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -59,7 +40,7 @@ const UserUpdateForm: React.FC<UpdateFormComponentProps> = (props) => {
       <a key={props.user.id} onClick={handleModalOpen}>
         编辑
       </a>
-      <Modal title={props.title} open={modalVisbile} onCancel={handleCloseModal} onOk={onOk}>
+      <Modal title={props.title} open={modalVisible} onCancel={handleCloseModal} onOk={onOk}>
         <Form
           {...formItemLayout}
           form={form}
@@ -102,7 +83,7 @@ const UserUpdateForm: React.FC<UpdateFormComponentProps> = (props) => {
             <Select
               placeholder="请输入角色角色"
               mode="multiple"
-              options={props.roleList.map((role) => ({ lable: role.name, value: role.name }))}
+              options={props.roleList.map((role) => ({ label: role.name, value: role.name }))}
             ></Select>
           </Form.Item>
         </Form>

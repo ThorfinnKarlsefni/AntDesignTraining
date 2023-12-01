@@ -16,10 +16,11 @@ import {
   ProFormSelect,
   ProFormText,
 } from '@ant-design/pro-components';
-import { App, InputNumber, message, Select, Space } from 'antd';
-import { invoicesFeeParams, InvoicesProps, TableListItem } from '../data';
+import { App, Form, InputNumber, message, Select, Space } from 'antd';
+import React from 'react';
+import { invoicesFeeParams, InvoicesItem, InvoicesProps } from '../data';
+import { addInvoice } from '../service';
 
-import { submitInvoice } from '../service';
 import UserInfoForm from './UserInfoForm';
 
 const paymentMethods = [
@@ -64,24 +65,20 @@ const FeeForm = (data: invoicesFeeParams) => (
 );
 
 const InvoicesForm: React.FC<InvoicesProps> = (props) => {
-  const handelSubmit = async (values: TableListItem) => {
-    try {
-      await submitInvoice(values);
-      message.success('开票成功!');
-      return true;
-    } catch (error: any) {
-      message.error(error.response.data);
-      return false;
-    }
+  const [form] = Form.useForm();
+  const handelSubmit = async (props: InvoicesItem) => {
+    await addInvoice(props);
+    message.success('开票成功!');
+    return true;
   };
 
   const renderContent = () => {
     return (
       <>
-        <UserInfoForm />
+        <UserInfoForm form={form} />
         <ProForm.Group>
           <ProFormSelect
-            name="toStataion"
+            name="toStation"
             label="到站"
             addonBefore={<NodeIndexOutlined />}
             options={[
@@ -176,7 +173,7 @@ const InvoicesForm: React.FC<InvoicesProps> = (props) => {
             addonAfter={paymentSelect}
           />
           <FeeForm
-            name="codcFee"
+            name="agencyFee"
             label="代收款"
             style={{ width: 150 }}
             addonAfter={paymentSelect}
@@ -228,6 +225,7 @@ const InvoicesForm: React.FC<InvoicesProps> = (props) => {
           onOpenChange={props.onOpenChange}
           open={props.open}
           onFinish={handelSubmit}
+          form={form}
         >
           {renderContent()}
         </DrawerForm>
