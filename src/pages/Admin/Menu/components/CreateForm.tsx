@@ -38,10 +38,16 @@ const CreateForm: React.FC<MenuTreeProps> = ({ menuTree, refreshMenuTree, roleIt
             width="md"
             placeholder="默认为父级"
             secondary
-            fieldProps={{ treeDefaultExpandAll: true }}
+            fieldProps={{
+              treeDefaultExpandAll: true,
+              fieldNames: {
+                label: 'name',
+                value: 'id',
+              },
+            }}
             tooltip="默认为父级"
             request={async () => {
-              return await menuTree;
+              return menuTree;
             }}
           />
           <ProFormText
@@ -81,7 +87,8 @@ const CreateForm: React.FC<MenuTreeProps> = ({ menuTree, refreshMenuTree, roleIt
             // ]}
           />
 
-          <ProFormSwitch label="是否隐藏" name="hidenInMenu" />
+          <ProFormSwitch label="是否隐藏" name="hideInMenu" />
+
           <ProFormSelect
             width="md"
             name="roles"

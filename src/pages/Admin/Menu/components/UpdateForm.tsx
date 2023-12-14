@@ -6,7 +6,7 @@
   ProFormTreeSelect,
 } from '@ant-design/pro-components';
 import { Form, message } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { updateMenu } from '../services';
 
 const UpdateForm: React.FC<UpdateFormProps> = ({
@@ -18,6 +18,13 @@ const UpdateForm: React.FC<UpdateFormProps> = ({
   refreshMenuTree,
 }) => {
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    // 当 menuItem 更新时，动态设置 initialValues
+    if (open && menuItem) {
+      form.setFieldsValue(menuItem);
+    }
+  }, [open, menuItem, form]);
 
   return (
     <>
@@ -46,6 +53,8 @@ const UpdateForm: React.FC<UpdateFormProps> = ({
           return true;
         }}
       >
+        <ProFormText hidden={true} name="id" />
+
         <ProFormTreeSelect
           name="parentId"
           label="父级"
@@ -85,7 +94,7 @@ const UpdateForm: React.FC<UpdateFormProps> = ({
 
         <ProFormText label="组件" width="md" name="component" />
 
-        <ProFormSwitch label="是否隐藏" name="hidenInMenu" initialValue={menuItem?.hideInMenu} />
+        <ProFormSwitch label="是否隐藏" name="hideInMenu" initialValue={menuItem?.hideInMenu} />
         <ProFormSelect width="md" name="roles" label="角色" mode="multiple" valueEnum={roleItems} />
       </ModalForm>
     </>

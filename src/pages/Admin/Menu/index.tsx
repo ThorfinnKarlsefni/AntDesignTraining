@@ -3,7 +3,7 @@ import { App } from 'antd';
 import { useEffect, useState } from 'react';
 import { getRoleList } from '../services';
 import CreateForm from './components/CreateForm';
-import { default as MenuList, default as MenuTree } from './components/MenuList';
+import { default as MenuList } from './components/MenuList';
 import { getMenuTree } from './services';
 
 const Menu: React.FC = () => {

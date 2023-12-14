@@ -22,6 +22,12 @@ const MenuList: React.FC<MenuTreeProps> = ({ menuTree, refreshMenuTree, roleItem
     const dropPosition = info.dropPosition;
     const parent = info.node.parent;
     const dropToGap = info.dropToGap;
+    // console.log(info);
+    // console.log('key:', dragKey);
+    // console.log('foreign key:', dropKey);
+    // console.log('position', dropPosition);
+    // console.log('parent', parent);
+    // console.log('dropToGap', dropToGap);
 
     handleUpdateMenuTree(dragKey, { parent, dropToGap, dropKey, dropPosition });
   };
@@ -58,28 +64,26 @@ const MenuList: React.FC<MenuTreeProps> = ({ menuTree, refreshMenuTree, roleItem
   const renderNodeTitle = (item: any) => {
     return (
       <>
-        <span>{item.title}</span>
-        <Button type="link" style={{ float: 'right' }} onClick={() => showDeleteConfirm(item.key)}>
+        <span>{item.name}</span>
+        <Button type="link" style={{ float: 'right' }} onClick={() => showDeleteConfirm(item.id)}>
           删除
         </Button>
-        <Button type="link" style={{ float: 'right' }} onClick={() => handleEditNode(item.key)}>
+        <Button type="link" style={{ float: 'right' }} onClick={() => handleEditNode(item.id)}>
           编辑
         </Button>
-        <Button type="link" style={{ float: 'right' }} onClick={() => handleHideNode(item.key)}>
-          {item.hidenInMenu === true ? '显示' : '隐藏'}
+        <Button type="link" style={{ float: 'right' }} onClick={() => handleHideNode(item.id)}>
+          {item.hideInMenu === true ? '显示' : '隐藏'}
         </Button>
       </>
     );
   };
 
   const renderTreeNode = (data: any) =>
-    data.map((item: any) => ({
-      key: item.key,
+    data.map((item: MenuTree) => ({
+      key: item.id,
       title: renderNodeTitle(item),
-      order: item.order,
-      parent: item.parent,
-      hidenInMenu: item.hidenInMenu,
       children: item.children && renderTreeNode(item.children),
+      parent: item.parentId,
     }));
 
   return (

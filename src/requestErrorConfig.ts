@@ -72,12 +72,17 @@ export const errorConfig: RequestConfig = {
       } else if (error.response) {
         // Axios 的错误
         // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-        if (error.response.status === 400) {
+        if (error.response.status === 401) {
+          message.error('登陆失效,重新登陆');
+          setTimeout(() => {
+            window.location.href = '/user/login';
+          }, 3000);
+        } else if (error.response.status === 400) {
           message.error(error.response.data);
         } else if (error.response.status === 415) {
           message.error('非法请求');
         } else {
-          message.error('服务器内部错误');
+          message.error('服务器内部错误,请联系管理员');
         }
       } else if (error.request) {
         // 请求已经成功发起，但没有收到响应

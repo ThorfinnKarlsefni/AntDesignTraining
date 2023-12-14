@@ -4,15 +4,16 @@
   parentId: number;
   order: number;
   path: string;
-  hideInMenu: string;
+  hideInMenu: boolean;
   component: string;
 }
 
 interface MenuTree {
-  key: number;
-  parent: number;
-  title: string;
+  id: number;
+  parentId: number;
+  name: string;
   order: number;
+  hideInMenu: boolean;
   children: MenuTree[];
 }
 
