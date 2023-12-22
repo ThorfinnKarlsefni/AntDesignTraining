@@ -8,3 +8,9 @@
   order: number;
   createdAt?: string;
 }
+
+interface PathOptions {
+  id: string;
+  name: string;
+  path: string;
+}

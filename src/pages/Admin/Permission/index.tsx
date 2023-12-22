@@ -1,27 +1,29 @@
-﻿import { ModalForm, ProColumns, ProTable } from '@ant-design/pro-components';
+﻿import { ProColumnType, ProTable } from '@ant-design/pro-components';
+import { useEffect, useState } from 'react';
 import CreateForm from './component/CreateForm';
+import { getPermissionList } from './services';
 
-const columns: ProColumns<PermissionItem>[] = [
+const columns: ProColumnType<PermissionItem>[] = [
   {
-    key: 'name',
-    title: '标识',
+    // key: 'name',
+    title: '名称',
     dataIndex: 'name',
     align: 'center',
   },
   {
-    key: 'httpMethod',
+    // key: 'httpMethod',
     title: '请求方法',
     dataIndex: 'httpMethod',
     align: 'center',
   },
   {
-    key: 'httpPath',
+    //    key: 'httpPath',
     title: '请求路径',
     dataIndex: 'httpPath',
     align: 'center',
   },
   {
-    key: 'createdAt',
+    // key: 'createdAt',
     title: '创建时间',
     dataIndex: 'createdAt',
     align: 'center',
@@ -29,22 +31,36 @@ const columns: ProColumns<PermissionItem>[] = [
 ];
 
 const Permission = () => {
-  //   const [modalVisible, setModalVisible] = useState(false);
+  const [dataSource, setDataSource] = useState<PermissionItem[]>();
 
-  //   const handleVisible = () => {
-  //     setModalVisible(true);
-  //   };
+  const fetchPermission = async () => {
+    const permissionList = await getPermissionList();
+    setDataSource(permissionList);
+  };
 
-  //   const dataSource = async () => {};
+  // const handleDragSortEnd = async () =>
+  // beforeIndex: number,
+  // afterIndex: number,
+  // newDataSource: PermissionItem[],
+  // {
+  //   await dragSort();
+  //   await fetchPermission();
+  //   message.success('update success');
+  // };
+
+  useEffect(() => {
+    fetchPermission();
+  }, []);
+
   return (
     <>
-      <ModalForm title="新建权限"></ModalForm>
       <ProTable<PermissionItem>
         columns={columns}
-        headerTitle="权限列表"
+        dataSource={dataSource}
+        rowKey="key"
         search={false}
-        toolBarRender={() => [<CreateForm key="createPermissionForm " />]}
-      ></ProTable>
+        toolBarRender={() => [<CreateForm key={'CreatePermissionForm'} />]}
+      />
     </>
   );
 };

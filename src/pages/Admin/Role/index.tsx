@@ -1,4 +1,5 @@
 ﻿import DeleteButton from '@/components/Buttons/delete';
+import FormatDateTime from '@/components/GlobalComponents/formatDateTime';
 import { ProCard, ProList } from '@ant-design/pro-components';
 import { App, message } from 'antd';
 import { useEffect, useState } from 'react';
@@ -43,8 +44,10 @@ const Role: React.FC = () => {
           }}
           metas={{
             title: { dataIndex: 'name' },
-            description: { dataIndex: 'id' },
-            content: { dataIndex: 'createdAt' },
+            content: {
+              dataIndex: 'createdAt',
+              render: (text, record) => FormatDateTime(record.createdAt),
+            },
             actions: {
               render: (text, row) => [
                 <App key={`update-${row.id}`}>
