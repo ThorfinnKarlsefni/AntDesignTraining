@@ -79,12 +79,14 @@ const Users: React.FC = () => {
         headerTitle="员工列表"
         dataSource={users}
         showActions="hover"
-        editable={{
-          onSave: async (key, record, originRow) => {
-            console.log(key, record, originRow);
-            return true;
-          },
-        }}
+        editable={
+          {
+            // onSave: async (key, record, originRow) => {
+            // console.log(key, record, originRow);
+            //   return true;
+            // },
+          }
+        }
         toolbar={{
           menu: {
             activeKey,

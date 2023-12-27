@@ -81,6 +81,8 @@ export const errorConfig: RequestConfig = {
           message.error(error.response.data);
         } else if (error.response.status === 415) {
           message.error('非法请求');
+        } else if (error.response.status === 405) {
+          message.error('请求方法不允许');
         } else {
           message.error('服务器内部错误,请联系管理员');
         }

@@ -29,3 +29,16 @@ export async function dragSort(params?: any) {
     },
   });
 }
+
+export async function updatePermission(id: string, params: PermissionItem) {
+  return request(`/api/permission/${id}`, {
+    method: 'PUT',
+    data: params,
+  });
+}
+
+export async function deletePermission(id: string) {
+  return request(`/api/permission/${id}`, {
+    method: 'DELETE',
+  });
+}

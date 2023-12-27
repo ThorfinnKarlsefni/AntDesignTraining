@@ -1,52 +1,28 @@
-﻿import { ProColumnType, ProTable } from '@ant-design/pro-components';
+﻿import { ProCard } from '@ant-design/pro-components';
+import { App, Tree } from 'antd';
 import { useEffect, useState } from 'react';
 import CreateForm from './component/CreateForm';
+import RenderNodeTitle from './component/RenderNodeTitle';
 import { getPermissionList } from './services';
 
-const columns: ProColumnType<PermissionItem>[] = [
-  {
-    // key: 'name',
-    title: '名称',
-    dataIndex: 'name',
-    align: 'center',
-  },
-  {
-    // key: 'httpMethod',
-    title: '请求方法',
-    dataIndex: 'httpMethod',
-    align: 'center',
-  },
-  {
-    //    key: 'httpPath',
-    title: '请求路径',
-    dataIndex: 'httpPath',
-    align: 'center',
-  },
-  {
-    // key: 'createdAt',
-    title: '创建时间',
-    dataIndex: 'createdAt',
-    align: 'center',
-  },
-];
-
 const Permission = () => {
-  const [dataSource, setDataSource] = useState<PermissionItem[]>();
+  const [permissionTree, setPermissionTree] = useState<PermissionItem[]>([]);
 
   const fetchPermission = async () => {
-    const permissionList = await getPermissionList();
-    setDataSource(permissionList);
+    const tree = await getPermissionList();
+    setPermissionTree(tree);
   };
 
-  // const handleDragSortEnd = async () =>
-  // beforeIndex: number,
-  // afterIndex: number,
-  // newDataSource: PermissionItem[],
-  // {
-  //   await dragSort();
-  //   await fetchPermission();
-  //   message.success('update success');
-  // };
+  const onDrop = async () => {};
+
+  const renderTreeNode = (data: any) => {
+    return data.map((item: PermissionItem) => ({
+      key: item.id,
+      title: <RenderNodeTitle permissionItem={item} />,
+      children: item.children && renderTreeNode(item.children),
+      parent: item.parentId,
+    }));
+  };
 
   useEffect(() => {
     fetchPermission();
@@ -54,13 +30,21 @@ const Permission = () => {
 
   return (
     <>
-      <ProTable<PermissionItem>
-        columns={columns}
-        dataSource={dataSource}
-        rowKey="key"
-        search={false}
-        toolBarRender={() => [<CreateForm key={'CreatePermissionForm'} />]}
-      />
+      <App>
+        <ProCard title={'权限列表'} extra={[<CreateForm key={'createForm'} />]}>
+          <ProCard>
+            {permissionTree.length > 0 && (
+              <Tree
+                defaultExpandAll={true}
+                draggable
+                blockNode
+                onDrop={onDrop}
+                treeData={renderTreeNode(permissionTree)}
+              />
+            )}
+          </ProCard>
+        </ProCard>
+      </App>
     </>
   );
 };

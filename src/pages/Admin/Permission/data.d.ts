@@ -1,11 +1,12 @@
 ﻿interface PermissionItem {
   id: string;
-  parentId: string;
+  parentId: number;
   name: string;
   slug?: string;
   httpMethod: string;
   httpPath: string;
   order: number;
+  children: PermissionItem[];
   createdAt?: string;
 }
 
