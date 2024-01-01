@@ -68,7 +68,11 @@ const UpdateForm: React.FC<UpdateFormProps> = ({
           name="httpMethod"
           width="md"
           mode="multiple"
-          initialValue={PermissionItem.httpMethod.split(',')}
+          initialValue={
+            PermissionItem.httpMethod.length !== 0
+              ? PermissionItem.httpMethod.split(',')
+              : undefined
+          }
           valueEnum={methodData}
           placeholder="输入http方法"
         />
@@ -78,7 +82,9 @@ const UpdateForm: React.FC<UpdateFormProps> = ({
           width="md"
           placeholder="输入http路径"
           mode="multiple"
-          initialValue={PermissionItem.httpPath.split(',')}
+          initialValue={
+            PermissionItem.httpPath.length !== 0 ? PermissionItem.httpPath.split(',') : undefined
+          }
           fieldProps={{
             fieldNames: {
               label: 'name',

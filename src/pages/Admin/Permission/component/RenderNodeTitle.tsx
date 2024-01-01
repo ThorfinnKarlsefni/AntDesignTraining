@@ -50,11 +50,11 @@ const RenderNodeTitle: React.FC<RenderNodeTitleProps> = ({ permissionItem }) => 
           <Col span={10}>{tags(permissionItem.httpPath, 'blue')}</Col>
 
           <Col style={{ marginLeft: 'auto' }}>
+            <Button type="link" onClick={handleEditNode}>
+              编辑
+            </Button>
             <Button type="link" onClick={() => showDeleteConfirm(permissionItem.id)}>
               删除
-            </Button>
-            <Button type="link" onClick={() => handleEditNode(permissionItem)}>
-              编辑
             </Button>
           </Col>
         </Row>
